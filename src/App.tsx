@@ -30,6 +30,7 @@ const App = () => {
           count is {count}
         </button>
         <CharacterCounter />
+        <button className="font-extralight">Styled with TailwindCSS</button>
       </Space>
     </div>
   );
