@@ -111,7 +111,20 @@ const CardBody = ({ project }: ProjectCardProps) => {
             className="overflow-hidden"
           >
             <div className="flex flex-col gap-4 px-6 pb-6">
-              <p className="text-base-content/55 text-sm leading-relaxed">{project.blurb}</p>
+              {/* The body collapses on click too. A real button rather than a click handler on the
+                  paragraph, so it is keyboard-operable and announces the state it controls; the
+                  links stay outside it and keep navigating. */}
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-expanded={open}
+                aria-controls={detailsId}
+                className="cursor-pointer text-left"
+              >
+                <span className="text-base-content/55 block text-sm leading-relaxed">
+                  {project.blurb}
+                </span>
+              </button>
 
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs">
                 {repo ? (
