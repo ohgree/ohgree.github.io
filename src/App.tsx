@@ -1,39 +1,48 @@
-import { useState } from "react";
+import { Footer } from "@/components/Footer";
+import { Hero } from "@/components/Hero";
+import { ProjectCard } from "@/components/ProjectCard";
+import { projectIndex } from "@/data";
+import type { ProjectKind } from "@/types";
 
-import { Button, DatePicker, Space, version } from "antd";
+const KIND_LABELS: Record<ProjectKind, string> = {
+  package: "Packages",
+  app: "Apps",
+  service: "Services",
+  tool: "Tools",
+};
 
-import reactLogo from "./asset/react.svg";
-import viteLogo from "./asset/vite.svg";
-import { CharacterCounter } from "./component/CharacterCounter";
+const KIND_ORDER: ProjectKind[] = ["package", "app", "service", "tool"];
 
-import "./App.css";
+export const App = () => {
+  const { profile, projects, generatedAt } = projectIndex;
 
-const App = () => {
-  const [count, setCount] = useState(0);
+  const groups = KIND_ORDER.map((kind) => ({
+    kind,
+    items: projects.filter((project) => project.kind === kind),
+  })).filter((group) => group.items.length > 0);
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />{" "}
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />{" "}
-        </a>
+    <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-16 px-6 py-16 sm:px-8 sm:py-24">
+      <Hero profile={profile} />
+
+      <main className="flex flex-col gap-12">
+        {groups.map((group) => (
+          <section key={group.kind} className="flex flex-col gap-5">
+            <h2 className="text-base-content/40 font-mono text-xs tracking-[0.18em] uppercase">
+              {KIND_LABELS[group.kind]}
+            </h2>
+            <div className="flex flex-col gap-5">
+              {group.items.map((project) => (
+                <ProjectCard key={project.slug} project={project} />
+              ))}
+            </div>
+          </section>
+        ))}
+      </main>
+
+      <div className="mt-auto">
+        <Footer publicRepos={profile.publicRepos} generatedAt={generatedAt} />
       </div>
-      <h1>Vite + React</h1>
-      <h1>antd version: {version}</h1>
-      <Space>
-        <DatePicker></DatePicker>
-        <Button type="primary">Primary Button</Button>
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <CharacterCounter />
-        <button className="font-extralight">Styled with TailwindCSS</button>
-      </Space>
     </div>
   );
 };
-
-export default App;

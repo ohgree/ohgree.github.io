@@ -1,13 +1,18 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import "./index.css";
-import { RecoilRoot } from "recoil";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <RecoilRoot>
-      <App />
-    </RecoilRoot>
-  </React.StrictMode>
+import { App } from "@/App";
+
+import "@/styles.css";
+
+const rootElement = document.querySelector("#root");
+
+if (!rootElement) {
+  throw new Error("Missing #root element");
+}
+
+createRoot(rootElement).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
 );
