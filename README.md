@@ -61,27 +61,20 @@ is not itself a link — the repo link lives in the expanded row rather than nes
 a button.
 
 The header animates between two states, expanded and compact, with no scroll-linked in-between
-values. It compacts as soon as the page scrolls and expands again at the very top. Four things are
+values: past a small threshold it compacts, back at the top it expands. Three things are
 load-bearing:
 
 - Everything common to both states (avatar, name, social links) is a **single instance** whose own
   size animates, so it travels between the layouts. Rendering an expanded copy and a compact copy
   and cross-fading them leaves that shared UI with no transition at all — it disappears in one place
   and reappears in another.
-- Both heights are **CSS variables** (`--header-expanded`, `--header-compact`), never measured. The
-  spacer and the header read the same values, so they cannot disagree and the reserved space is
-  correct on the first paint instead of appearing once an observer has run. The expanded value is
-  larger below `40rem`, where the tagline wraps to more lines.
-- The header is `fixed` with a spacer of **fixed** height. Sticky instead keeps the full height in
-  flow, so shrinking shortens the document, which clamps `scrollY`, which re-crosses the threshold —
-  at a 620px viewport it oscillates without settling (idle heights 99, 103, 103, 80, 60). A spacer
-  that resized causes the same feedback, and also shortens the page below the snap position, putting
-  it out of reach. Fixed height keeps document height constant in every state.
-- Resting positions come from **CSS scroll snapping**: `scroll-snap-type: y proximity` on the root,
-  `snap-start` on the spacer (top of page, header expanded) and on the content container, whose
-  `scroll-margin-top` clears the bar so content rests a gutter below it. `proximity`, not
-  `mandatory`, so reading further down is never trapped. Nothing else is a snap target — sections
-  would put notches on content whose height changes as cards expand.
+- The header is `fixed` with a spacer that shrinks on the same transition, so content slides up in
+  sync with the bar. Both heights are **CSS variables** (`--header-expanded`, `--header-compact`),
+  never measured; the expanded value is larger below `40rem`, where the tagline wraps to more
+  lines. Shrinking the spacer shortens the document, which can clamp `scrollY` back across the
+  compact threshold and re-expand the header on its own — a sticky header oscillates exactly this
+  way at a 620px viewport. The root's scroll floor (`min-h-[calc(100dvh+1rem)]`) keeps `maxScroll`
+  above the threshold, which makes the single-threshold state machine flap-free by construction.
 - `m` is [Motion](https://motion.dev)'s small build and carries no features of its own, so
   `LazyMotion` in `main.tsx` supplies `domAnimation`. Without it the animations silently never bind.
 
