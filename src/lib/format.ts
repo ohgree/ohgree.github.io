@@ -4,7 +4,6 @@ const relative = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
 const compact = new Intl.NumberFormat("en", { notation: "compact" });
 const absolute = new Intl.DateTimeFormat("en", { year: "numeric", month: "short", day: "numeric" });
 
-/** "3 days ago" / "last month" — coarse buckets, since exact hours don't matter here. */
 export const relativeTime = (iso: string, now = Date.now()) => {
   const days = Math.round((new Date(iso).getTime() - now) / MS_PER_DAY);
   if (Math.abs(days) < 30) return relative.format(days, "day");
@@ -16,7 +15,7 @@ export const absoluteDate = (iso: string) => absolute.format(new Date(iso));
 
 export const compactNumber = (value: number) => compact.format(value);
 
-/** GitHub's language colors, for the languages actually in use here. */
+// GitHub's language colors.
 const LANGUAGE_COLORS: Record<string, string> = {
   AutoHotkey: "#6594b9",
   C: "#555555",

@@ -49,8 +49,7 @@ const CardBody = ({ project }: ProjectCardProps) => {
 
   return (
     <div className="flex flex-col">
-      {/* The whole summary is the toggle, so the title can't also be a link — the repo link
-          lives in the details row below instead. */}
+      {/* The whole summary is the toggle, so the title can't also be a link. */}
       <button
         type="button"
         onClick={() => setOpen((wasOpen) => !wasOpen)}
@@ -111,9 +110,7 @@ const CardBody = ({ project }: ProjectCardProps) => {
             className="overflow-hidden"
           >
             <div className="flex flex-col gap-4 px-6 pb-6">
-              {/* The body collapses on click too. A real button rather than a click handler on the
-                  paragraph, so it is keyboard-operable and announces the state it controls; the
-                  links stay outside it and keep navigating. */}
+              {/* A real button, so collapse-on-click stays keyboard-operable. */}
               <button
                 type="button"
                 onClick={() => setOpen(false)}

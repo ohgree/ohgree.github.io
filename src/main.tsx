@@ -14,8 +14,7 @@ if (!rootElement) {
 
 createRoot(rootElement).render(
   <StrictMode>
-    {/* `m` components are the small build and carry no features of their own, so the DOM
-        animation feature set has to be supplied here or their styles never bind. */}
+    {/* `m` components carry no features of their own; without this they silently never animate. */}
     <LazyMotion features={domAnimation}>
       <App />
     </LazyMotion>
