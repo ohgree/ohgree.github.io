@@ -1,4 +1,4 @@
-import { m, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { m, useMotionValueEvent, useReducedMotion, useScroll } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 import { SOCIALS } from "@/components/socials";
@@ -8,39 +8,40 @@ type HeaderProps = {
   profile: Profile;
 };
 
-/** Scroll offsets in px over which the header compacts. */
-const FOLD_START = 32;
-const FOLD_END = 208;
-const FOLD_MID = (FOLD_START + FOLD_END) / 2;
+/**
+ * Asymmetric thresholds: once compacted the header stays compacted until well back up the page.
+ * A single threshold can flicker when a scroll settles right on top of it.
+ */
+const COMPACT_AT = 120;
+const EXPAND_AT = 72;
 
+/** Compact bar height, matching `h-14`. */
 const BAR_HEIGHT = 56;
-const AVATAR = 56;
-const COMPACT_SCALE = 0.6;
-/** Matches the content wrapper's `pt-14`. */
-const CONTENT_TOP = 56;
 
-/** Where the scaled-down identity row must land to sit centred in the compact bar. */
-const COMPACT_TOP = (BAR_HEIGHT - AVATAR * COMPACT_SCALE) / 2;
+const EASE = [0.22, 0.61, 0.36, 1] as const;
 
 /**
- * One header that compacts, rather than a tall header cross-fading into a separate bar.
+ * Two states only — expanded or compact, with a short transition between them. No scroll-linked
+ * intermediate sizing.
  *
- * It is `fixed` with a static spacer reserving its expanded height, so its own height can shrink
- * freely while the document height never changes. That matters: a shrinking in-flow header
- * reflows the page, which moves scrollY, which can re-cross the fold threshold — and the fold
- * then stutters mid-scroll. Everything here is driven by MotionValues, so the morph updates per
- * frame without re-rendering React.
+ * The header is `fixed` with a static spacer reserving its expanded height, so its height can
+ * change without altering document height. That matters: a shrinking in-flow header reflows the
+ * page, which moves scrollY, which can re-cross the threshold and make the header flap.
+ *
+ * The two layouts cross-fade rather than morphing into each other. Motion's `layout` prop could
+ * morph them, but it animates boxes with scale transforms, which distorts text mid-flight, and it
+ * needs the larger `domMax` feature bundle. Cross-fading keeps text crisp at both ends.
  */
 export const Header = ({ profile }: HeaderProps) => {
   const { scrollY } = useScroll();
   const reduceMotion = useReducedMotion();
-  const animated = !reduceMotion;
 
   const contentRef = useRef<HTMLDivElement>(null);
   const [expandedHeight, setExpandedHeight] = useState(0);
+  const [compact, setCompact] = useState(false);
 
-  // The expanded height depends on how the text wraps, so it is measured rather than assumed.
-  // ResizeObserver is an external system, which is what effects are for.
+  // The expanded height depends on how the text wraps, so measure it. Only this layout's opacity
+  // ever changes, never its box, so the measurement stays stable while the header animates.
   useEffect(() => {
     const node = contentRef.current;
     if (!node) return;
@@ -54,77 +55,59 @@ export const Header = ({ profile }: HeaderProps) => {
     return () => observer.disconnect();
   }, []);
 
-  // Only flips at the midpoint. Needed as state because focusability and aria can't be
-  // expressed as MotionValues.
-  const [folded, setFolded] = useState(false);
-  useMotionValueEvent(scrollY, "change", (latest) => setFolded(latest > FOLD_MID));
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setCompact((wasCompact) => (wasCompact ? latest > EXPAND_AT : latest > COMPACT_AT));
+  });
 
-  const fold = [FOLD_START, FOLD_END];
-  const height = useTransform(scrollY, fold, [expandedHeight || BAR_HEIGHT, BAR_HEIGHT]);
-
-  // The identity row scales down in place and rises to centre itself in the compact bar.
-  const identityY = useTransform(scrollY, fold, [0, COMPACT_TOP - CONTENT_TOP]);
-  const identityScale = useTransform(scrollY, fold, [1, COMPACT_SCALE]);
-
-  // Everything only the expanded header shows fades out over the first half of the range.
-  const extrasOpacity = useTransform(scrollY, [FOLD_START, FOLD_MID], [1, 0]);
-  const chromeOpacity = useTransform(scrollY, fold, [0, 1]);
-  const railOpacity = useTransform(scrollY, [FOLD_MID, FOLD_END], [0, 1]);
-
-  const measured = animated && expandedHeight > 0;
+  const measured = expandedHeight > 0;
+  const duration = reduceMotion ? 0 : 0.28;
+  const fade = reduceMotion ? 0 : 0.16;
 
   return (
     <>
-      {/* Holds the expanded height in flow so the fixed header's shrinking never moves scrollY. */}
+      {/* Holds the expanded height in flow so the fixed header's resizing never moves scrollY. */}
       {measured ? <div style={{ height: expandedHeight }} aria-hidden="true" /> : null}
 
       <m.header
-        className={
-          animated ? "fixed inset-x-0 top-0 z-50 overflow-hidden" : "relative overflow-hidden"
-        }
-        style={measured ? { height } : undefined}
+        className="fixed inset-x-0 top-0 z-50 overflow-hidden"
+        initial={false}
+        animate={{ height: compact ? BAR_HEIGHT : measured ? expandedHeight : undefined }}
+        transition={{ duration, ease: EASE }}
       >
         <m.div
           aria-hidden="true"
           className="border-base-content/10 bg-base-100/85 absolute inset-0 border-b backdrop-blur-md"
-          style={animated ? { opacity: chromeOpacity } : { opacity: 0 }}
+          initial={false}
+          animate={{ opacity: compact ? 1 : 0 }}
+          transition={{ duration: fade }}
         />
 
-        <div ref={contentRef} className="relative mx-auto max-w-3xl px-6 pt-14 pb-8 sm:px-8">
-          <m.div
-            className="flex items-center gap-4"
-            style={
-              animated
-                ? { y: identityY, scale: identityScale, transformOrigin: "left top" }
-                : undefined
-            }
-          >
+        {/* Expanded layout. Always laid out at its natural size, which is what gets measured. */}
+        <m.div
+          ref={contentRef}
+          className="relative mx-auto max-w-3xl px-6 pt-14 pb-8 sm:px-8"
+          initial={false}
+          animate={{ opacity: compact ? 0 : 1 }}
+          transition={{ duration: fade }}
+          style={{ pointerEvents: compact ? "none" : "auto" }}
+          aria-hidden={compact}
+        >
+          <div className="flex items-center gap-4">
             <img
               src={profile.avatarUrl}
               alt=""
-              width={AVATAR}
-              height={AVATAR}
+              width={56}
+              height={56}
               className="border-base-content/10 size-14 shrink-0 rounded-full border"
               loading="eager"
             />
             <div className="flex min-w-0 flex-col gap-1">
               <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{profile.name}</h1>
-              {profile.bio ? (
-                <m.p
-                  className="text-base-content/60 text-sm"
-                  style={animated ? { opacity: extrasOpacity } : undefined}
-                >
-                  {profile.bio}
-                </m.p>
-              ) : null}
+              {profile.bio ? <p className="text-base-content/60 text-sm">{profile.bio}</p> : null}
             </div>
-          </m.div>
+          </div>
 
-          <m.div
-            className="mt-6 flex flex-col gap-6"
-            style={animated ? { opacity: extrasOpacity } : undefined}
-            aria-hidden={folded}
-          >
+          <div className="mt-6 flex flex-col gap-6">
             <p className="text-base-content/80 max-w-2xl text-base leading-relaxed sm:text-lg">
               The short list of what I build and maintain. Publicly, at least.
             </p>
@@ -139,7 +122,7 @@ export const Header = ({ profile }: HeaderProps) => {
                   href={url}
                   target="_blank"
                   rel="noreferrer"
-                  tabIndex={folded ? -1 : undefined}
+                  tabIndex={compact ? -1 : undefined}
                   className="text-base-content/70 hover:text-primary inline-flex items-center gap-2 transition-colors"
                 >
                   <Icon />
@@ -147,32 +130,45 @@ export const Header = ({ profile }: HeaderProps) => {
                 </a>
               ))}
             </nav>
-          </m.div>
-        </div>
+          </div>
+        </m.div>
 
-        {/* Icon-only rail that takes over once the labelled links have faded. */}
+        {/* Compact layout. Absolutely positioned so it never affects the measurement, and
+            everything in it is centred on the bar's vertical axis. */}
         <m.div
-          className="pointer-events-none absolute inset-x-0 top-0"
-          style={{ height: BAR_HEIGHT, ...(animated ? { opacity: railOpacity } : { opacity: 0 }) }}
-          aria-hidden={!folded}
+          className="absolute inset-x-0 top-0 flex items-center"
+          style={{ height: BAR_HEIGHT, pointerEvents: compact ? "auto" : "none" }}
+          initial={false}
+          animate={{ opacity: compact ? 1 : 0 }}
+          transition={{ duration: fade, delay: compact && !reduceMotion ? 0.08 : 0 }}
+          aria-hidden={!compact}
         >
-          <nav className="mx-auto flex h-full max-w-3xl items-center justify-end gap-4 px-6 sm:px-8">
-            {SOCIALS.map(({ label, url, Icon }) => (
-              <a
-                key={label}
-                href={url}
-                target="_blank"
-                rel="noreferrer"
-                tabIndex={folded ? undefined : -1}
-                className={`text-base-content/70 hover:text-primary inline-flex items-center transition-colors ${
-                  folded ? "pointer-events-auto" : ""
-                }`}
-              >
-                <Icon />
-                <span className="sr-only">{label}</span>
-              </a>
-            ))}
-          </nav>
+          <div className="mx-auto flex w-full max-w-3xl items-center gap-3 px-6 sm:px-8">
+            <img
+              src={profile.avatarUrl}
+              alt=""
+              width={32}
+              height={32}
+              className="border-base-content/10 size-8 shrink-0 rounded-full border"
+            />
+            <span className="truncate text-sm font-semibold tracking-tight">{profile.name}</span>
+
+            <nav className="ml-auto flex shrink-0 items-center gap-4">
+              {SOCIALS.map(({ label, url, Icon }) => (
+                <a
+                  key={label}
+                  href={url}
+                  target="_blank"
+                  rel="noreferrer"
+                  tabIndex={compact ? undefined : -1}
+                  className="text-base-content/70 hover:text-primary inline-flex items-center transition-colors"
+                >
+                  <Icon />
+                  <span className="sr-only">{label}</span>
+                </a>
+              ))}
+            </nav>
+          </div>
         </m.div>
       </m.header>
     </>
