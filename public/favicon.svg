@@ -1,7 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="8" fill="#2e3440" />
+  <rect width="32" height="32" rx="8" fill="#1b1315" />
+  <!-- Glyph spans x 9.5-22.5 and y 10-22, so the optical margins match on all four sides. -->
   <path
-    d="M8 22V10h3.4l3.1 6.2L17.6 10H21v12h-3v-6.4l-2.3 4.5h-2.4L11 15.6V22H8Z"
-    fill="#88c0d0"
+    d="M9.5 22V10h3.4l3.1 6.2L19.1 10H22.5v12h-3v-6.4l-2.3 4.5h-2.4L12.5 15.6V22H9.5Z"
+    fill="#e0a765"
   />
 </svg>

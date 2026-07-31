@@ -7,8 +7,8 @@
  */
 @plugin "daisyui" {
   themes:
-    nord --default,
-    dim --prefersdark;
+    silk --default,
+    coffee --prefersdark;
 }
 
 @theme {
@@ -26,11 +26,14 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   /*
-   * Recessed page, raised cards. base-100 -> base-300 is ~6 lightness units in nord and ~5 in
-   * dim, where -200 is only ~2 — enough separation that the dom-cutout gap on the package card
-   * actually reads as a hole punched through to the page behind it.
+   * Page one step down on base-200 so cards can be the lightest surface (base-100) and read as
+   * raised. base-200 rather than base-300: how far apart the base steps sit is very theme-
+   * dependent, and in autumn base-300 is 15.6 lightness units below base-100 — a heavy grey slab
+   * instead of the theme's own look — where base-200 is a comfortable 7.8. The gap the dom-cutout
+   * mask punches shows this surface, and the card's shadow is clipped by the same mask, so its
+   * contour traces the hole even on themes whose steps sit close together (coffee is only 3.5).
    */
-  background-color: var(--color-base-300);
+  background-color: var(--color-base-200);
 }
 
 /* Soft light source behind the header, so the page doesn't read as a flat slab. */

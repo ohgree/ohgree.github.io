@@ -1,5 +1,5 @@
 import { Footer } from "@/components/Footer";
-import { Hero } from "@/components/Hero";
+import { Header } from "@/components/Header";
 import { ProjectCard } from "@/components/ProjectCard";
 import { projectIndex } from "@/data";
 import type { ProjectKind } from "@/types";
@@ -22,26 +22,28 @@ export const App = () => {
   })).filter((group) => group.items.length > 0);
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-16 px-6 py-16 sm:px-8 sm:py-24">
-      <Hero profile={profile} />
+    <div className="flex min-h-dvh flex-col">
+      <Header profile={profile} />
 
-      <main className="flex flex-col gap-12">
-        {groups.map((group) => (
-          <section key={group.kind} className="flex flex-col gap-5">
-            <h2 className="text-base-content/40 font-mono text-xs tracking-[0.18em] uppercase">
-              {KIND_LABELS[group.kind]}
-            </h2>
-            <div className="flex flex-col gap-5">
-              {group.items.map((project) => (
-                <ProjectCard key={project.slug} project={project} />
-              ))}
-            </div>
-          </section>
-        ))}
-      </main>
+      <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-16 px-6 pt-8 pb-16 sm:px-8 sm:pb-24">
+        <main className="flex flex-col gap-12">
+          {groups.map((group) => (
+            <section key={group.kind} className="flex flex-col gap-5">
+              <h2 className="text-base-content/40 font-mono text-xs tracking-[0.18em] uppercase">
+                {KIND_LABELS[group.kind]}
+              </h2>
+              <div className="flex flex-col gap-5">
+                {group.items.map((project) => (
+                  <ProjectCard key={project.slug} project={project} />
+                ))}
+              </div>
+            </section>
+          ))}
+        </main>
 
-      <div className="mt-auto">
-        <Footer publicRepos={profile.publicRepos} generatedAt={generatedAt} />
+        <div className="mt-auto">
+          <Footer publicRepos={profile.publicRepos} generatedAt={generatedAt} />
+        </div>
       </div>
     </div>
   );
