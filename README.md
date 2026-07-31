@@ -53,6 +53,22 @@ pnpm lint         # oxlint
 pnpm fmt          # oxfmt (use fmt:check in CI)
 ```
 
+## Interaction
+
+Cards start collapsed, showing name, tagline, and stats; clicking one expands the blurb and the
+links. The whole summary is the toggle button, which is why the title is not itself a link — the
+repo link lives in the expanded row instead of nesting an anchor inside a button.
+
+The wide header hands off to a compact bar as you scroll, driven by
+[Motion](https://motion.dev) MotionValues so the transform updates per frame without re-rendering
+React. Two things are load-bearing there:
+
+- The bar is `fixed`, not a shrinking `sticky` header. Animating a sticky header's height reflows
+  the page, which moves `scrollY`, which can re-cross the fold threshold — the fold then stutters
+  mid-scroll. Fixed keeps document height constant, so only transform and opacity move.
+- `m` (Motion's small build) carries no features of its own, so `LazyMotion` in `main.tsx` supplies
+  `domAnimation`. Without it, MotionValue styles silently never bind and the bar stays hidden.
+
 ## Theming
 
 The palette is a daisyUI theme pair, set in one place in [`src/styles.css`](./src/styles.css):
@@ -60,14 +76,20 @@ The palette is a daisyUI theme pair, set in one place in [`src/styles.css`](./sr
 ```css
 @plugin "daisyui" {
   themes:
-    nord --default,
-    dim --prefersdark;
+    silk --default,
+    coffee --prefersdark;
 }
 ```
 
 Swap either name for any [built-in daisyUI theme](https://daisyui.com/docs/themes/) to re-skin the
 page. Components are hand-styled against the token layer (`base-*`, `primary`, `*-content`), so
 they follow whatever theme is set.
+
+One thing to know when changing themes: the `dom-cutout` gap on the package card is only visible
+because the page (`base-200`) and the cards (`base-100`) differ. How far apart those steps sit
+varies a lot per theme — 8.1 lightness units in `silk`, 3.5 in `coffee` — so the card also
+carries a shadow, which the same mask clips and which therefore traces the hole even on themes
+whose surfaces sit close together.
 
 ## License
 

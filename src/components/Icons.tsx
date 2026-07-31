@@ -4,27 +4,44 @@ type IconProps = {
 
 const base = "size-4 shrink-0";
 
+// Brand marks are the canonical paths (GitHub and npm from simple-icons, LinkedIn from Bootstrap
+// Icons, which still ships it), not hand-approximations — each keeps its source viewBox.
 export const GitHubIcon = ({ className = base }: IconProps) => (
-  <svg className={className} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.07-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A7.995 7.995 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
   </svg>
 );
 
 export const NpmIcon = ({ className = base }: IconProps) => (
-  <svg className={className} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-    <path d="M0 3.5h16v9H8v-1.5H6.5v1.5H0v-9Zm1.5 1.5v6h2.5V6.5h1.5v4.5h1V5H1.5Zm7 0v6H10V6.5h1.5v4.5H13V6.5h1.5v4.5H15V5H8.5Z" />
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z" />
   </svg>
 );
 
 export const LinkedInIcon = ({ className = base }: IconProps) => (
   <svg className={className} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-    <path d="M2.7 3.5a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6ZM1.5 15h2.4V5.3H1.5V15Zm4.2 0h2.4V9.9c0-1.35.9-1.75 1.5-1.75.58 0 1.4.44 1.4 1.75V15h2.4V9.6c0-2.8-1.6-3.9-3.1-3.9-1.2 0-1.9.5-2.2 1.05V5.3H5.7V15Z" />
+    <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z" />
   </svg>
 );
 
 export const StarIcon = ({ className = base }: IconProps) => (
   <svg className={className} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
     <path d="M8 .8l2.2 4.46 4.92.72-3.56 3.47.84 4.9L8 12.03l-4.4 2.32.84-4.9L.88 5.98l4.92-.72L8 .8Z" />
+  </svg>
+);
+
+export const ChevronIcon = ({ className = base }: IconProps) => (
+  <svg
+    className={className}
+    viewBox="0 0 16 16"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="m4 6.5 4 4 4-4" />
   </svg>
 );
 
