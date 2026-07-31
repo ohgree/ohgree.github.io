@@ -2,6 +2,8 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { ProjectCard } from "@/components/ProjectCard";
 import { projectIndex } from "@/data";
+import { cn } from "@/lib/cn";
+import { CONTAINER } from "@/lib/layout";
 import type { ProjectKind } from "@/types";
 
 const KIND_LABELS: Record<ProjectKind, string> = {
@@ -25,7 +27,16 @@ export const App = () => {
     <div className="flex min-h-dvh flex-col">
       <Header profile={profile} />
 
-      <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-16 px-6 pt-8 pb-16 sm:px-8 sm:pb-24">
+      <div
+        className={cn(
+          CONTAINER,
+          "flex flex-1 flex-col gap-16",
+          // The compact resting position: scroll-margin-top clears the bar so content rests just
+          // below it rather than under it.
+          "snap-start scroll-mt-[calc(var(--header-compact)+var(--gutter)+env(safe-area-inset-top))]",
+          "pt-[var(--gutter)] pb-[calc(var(--gutter)+env(safe-area-inset-bottom))]",
+        )}
+      >
         <main className="flex flex-col gap-12">
           {groups.map((group) => (
             <section key={group.kind} className="flex flex-col gap-5">

@@ -27,6 +27,7 @@
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.0.5",
     "daisyui": "^5.7.9",
+    "eslint-plugin-better-tailwindcss": "^4.7.0",
     "oxfmt": "^0.61.0",
     "oxlint": "^1.76.0",
     "tailwindcss": "^4.3.3",

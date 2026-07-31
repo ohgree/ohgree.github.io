@@ -17,9 +17,34 @@
   --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 }
 
+:root {
+  /* One gutter for every side of the page, so the inner padding stays even all the way round. */
+  --gutter: 1.5rem;
+
+  /*
+   * Header geometry, declared rather than measured. The spacer and the header read the same values,
+   * so nothing has to be observed at runtime and the reserved space exists on the very first paint.
+   * Generous enough for the tagline to wrap on narrow screens; the header clips rather than grows.
+   */
+  --header-expanded: 19rem;
+  --header-compact: 3.5rem;
+}
+
+@media (width >= 40rem) {
+  :root {
+    --header-expanded: 15rem;
+  }
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  /*
+   * Two snap positions matching the header's two states: the spacer (top of the page, header
+   * expanded) and the content container below it (header compact, content clear of the bar).
+   * `proximity`, not `mandatory`, so reading further down is never trapped.
+   */
+  scroll-snap-type: y proximity;
 }
 
 body {

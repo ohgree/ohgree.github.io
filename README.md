@@ -56,18 +56,39 @@ pnpm fmt          # oxfmt (use fmt:check in CI)
 ## Interaction
 
 Cards start collapsed, showing name, tagline, and stats; clicking one expands the blurb and the
-links. The whole summary is the toggle button, which is why the title is not itself a link — the
-repo link lives in the expanded row instead of nesting an anchor inside a button.
+links, and clicking the blurb collapses it again. The summary is the toggle, which is why the title
+is not itself a link — the repo link lives in the expanded row rather than nesting an anchor inside
+a button.
 
-The wide header hands off to a compact bar as you scroll, driven by
-[Motion](https://motion.dev) MotionValues so the transform updates per frame without re-rendering
-React. Two things are load-bearing there:
+The header animates between two states, expanded and compact, with no scroll-linked in-between
+values. It compacts as soon as the page scrolls and expands again at the very top. Four things are
+load-bearing:
 
-- The bar is `fixed`, not a shrinking `sticky` header. Animating a sticky header's height reflows
-  the page, which moves `scrollY`, which can re-cross the fold threshold — the fold then stutters
-  mid-scroll. Fixed keeps document height constant, so only transform and opacity move.
-- `m` (Motion's small build) carries no features of its own, so `LazyMotion` in `main.tsx` supplies
-  `domAnimation`. Without it, MotionValue styles silently never bind and the bar stays hidden.
+- Everything common to both states (avatar, name, social links) is a **single instance** whose own
+  size animates, so it travels between the layouts. Rendering an expanded copy and a compact copy
+  and cross-fading them leaves that shared UI with no transition at all — it disappears in one place
+  and reappears in another.
+- Both heights are **CSS variables** (`--header-expanded`, `--header-compact`), never measured. The
+  spacer and the header read the same values, so they cannot disagree and the reserved space is
+  correct on the first paint instead of appearing once an observer has run. The expanded value is
+  larger below `40rem`, where the tagline wraps to more lines.
+- The header is `fixed` with a spacer of **fixed** height. Sticky instead keeps the full height in
+  flow, so shrinking shortens the document, which clamps `scrollY`, which re-crosses the threshold —
+  at a 620px viewport it oscillates without settling (idle heights 99, 103, 103, 80, 60). A spacer
+  that resized causes the same feedback, and also shortens the page below the snap position, putting
+  it out of reach. Fixed height keeps document height constant in every state.
+- Resting positions come from **CSS scroll snapping**: `scroll-snap-type: y proximity` on the root,
+  `snap-start` on the spacer (top of page, header expanded) and on the content container, whose
+  `scroll-margin-top` clears the bar so content rests a gutter below it. `proximity`, not
+  `mandatory`, so reading further down is never trapped. Nothing else is a snap target — sections
+  would put notches on content whose height changes as cards expand.
+- `m` is [Motion](https://motion.dev)'s small build and carries no features of its own, so
+  `LazyMotion` in `main.tsx` supplies `domAnimation`. Without it the animations silently never bind.
+
+Gutters come from a single `--gutter`, shared by the header and the content via `CONTAINER` so the
+compact bar's avatar stays aligned with the cards. Each side takes `max(--gutter, safe-area-inset)`,
+and the page renders with `viewport-fit=cover` so those insets are real. Link labels drop to
+icon-only under `sm`, since three labels beside the avatar and name squeeze the expanded row.
 
 ## Theming
 

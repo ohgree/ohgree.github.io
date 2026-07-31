@@ -10,9 +10,15 @@
     "browser": true,
     "es2024": true
   },
+  // oxlint has no built-in Tailwind plugin, so the ESLint one is loaded through jsPlugins.
+  "jsPlugins": ["eslint-plugin-better-tailwindcss"],
   "settings": {
     "react": {
       "version": "19.2"
+    },
+    "better-tailwindcss": {
+      // Tailwind 4 has no config file; the plugin reads the theme from the CSS entry point.
+      "entryPoint": "src/styles.css"
     }
   },
   "rules": {
@@ -24,7 +30,17 @@
     // tsconfig uses jsx: "react-jsx", so the automatic runtime injects the factory itself.
     "react/react-in-jsx-scope": "off",
     // Stylesheets are imported for their side effect.
-    "import/no-unassigned-import": ["error", { "allow": ["**/*.css"] }]
+    "import/no-unassigned-import": ["error", { "allow": ["**/*.css"] }],
+
+    // Tailwind correctness only. Class ordering and line wrapping are left to oxfmt's
+    // sortTailwindcss, so those rules stay off to avoid the two fighting each other.
+    "better-tailwindcss/no-unknown-classes": "error",
+    "better-tailwindcss/no-conflicting-classes": "error",
+    "better-tailwindcss/no-duplicate-classes": "error",
+    "better-tailwindcss/no-deprecated-classes": "error",
+    "better-tailwindcss/no-unnecessary-whitespace": "error",
+    "better-tailwindcss/enforce-shorthand-classes": "warn",
+    "better-tailwindcss/no-concatenated-classes": "error"
   },
   "overrides": [
     {
