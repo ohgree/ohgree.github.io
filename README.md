@@ -85,11 +85,10 @@ Swap either name for any [built-in daisyUI theme](https://daisyui.com/docs/theme
 page. Components are hand-styled against the token layer (`base-*`, `primary`, `*-content`), so
 they follow whatever theme is set.
 
-One thing to know when changing themes: the `dom-cutout` gap on the package card is only visible
-because the page (`base-200`) and the cards (`base-100`) differ. How far apart those steps sit
-varies a lot per theme — 8.1 lightness units in `silk`, 3.5 in `coffee` — so the card also
-carries a shadow, which the same mask clips and which therefore traces the hole even on themes
-whose surfaces sit close together.
+The page sits on `base-200` so cards can be the lightest surface (`base-100`) and read as raised.
+Worth knowing when changing themes: how far apart the base steps sit varies a lot — `base-300` is
+15.6 lightness units below `base-100` in `autumn`, which reads as a grey slab rather than that
+theme's own look, where `base-200` is a comfortable 8.1 in `silk`.
 
 ## License
 
