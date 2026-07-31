@@ -40,23 +40,20 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   /*
-   * Two snap positions matching the header's two states: the spacer (top of the page, header
-   * expanded) and the content container below it (header compact, content clear of the bar).
-   * `proximity`, not `mandatory`, so reading further down is never trapped.
+   * Page one step down on base-200 so cards can be the lightest surface (base-100) and read as
+   * raised. base-200 rather than base-300 because how far apart the base steps sit is very
+   * theme-dependent: base-300 is 15.6 lightness units below base-100 in autumn, which reads as a
+   * heavy grey slab instead of the theme's own look, where base-200 is a comfortable 8.1 in silk.
+   *
+   * On html, not body: daisyUI paints :root base-100, so overscroll rubber-banding and any area
+   * past the body would otherwise flash the wrong shade.
    */
-  scroll-snap-type: y proximity;
+  background-color: var(--color-base-200);
 }
 
 body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  /*
-   * Page one step down on base-200 so cards can be the lightest surface (base-100) and read as
-   * raised. base-200 rather than base-300 because how far apart the base steps sit is very
-   * theme-dependent: base-300 is 15.6 lightness units below base-100 in autumn, which reads as a
-   * heavy grey slab instead of the theme's own look, where base-200 is a comfortable 8.1 in silk.
-   */
-  background-color: var(--color-base-200);
 }
 
 /* Soft light source behind the header, so the page doesn't read as a flat slab. */

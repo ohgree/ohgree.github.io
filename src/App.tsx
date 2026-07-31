@@ -24,16 +24,16 @@ export const App = () => {
   })).filter((group) => group.items.length > 0);
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    // Scroll floor: the spacer shrinks when the header compacts, and this keeps maxScroll above
+    // the compact threshold afterwards, so the shrink can never clamp scrollY back across it and
+    // re-expand the header on its own.
+    <div className="flex min-h-[calc(100dvh+1rem)] flex-col">
       <Header profile={profile} />
 
       <div
         className={cn(
           CONTAINER,
           "flex flex-1 flex-col gap-16",
-          // The compact resting position: scroll-margin-top clears the bar so content rests just
-          // below it rather than under it.
-          "snap-start scroll-mt-[calc(var(--header-compact)+var(--gutter)+env(safe-area-inset-top))]",
           "pt-[var(--gutter)] pb-[calc(var(--gutter)+env(safe-area-inset-bottom))]",
         )}
       >

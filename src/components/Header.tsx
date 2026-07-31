@@ -3,7 +3,6 @@ import { useState } from "react";
 
 import { SOCIALS } from "@/components/socials";
 import { cn } from "@/lib/cn";
-import { COMPACT_AT, EXPAND_AT } from "@/lib/fold";
 import { CONTAINER } from "@/lib/layout";
 import type { Profile } from "@/types";
 
@@ -11,53 +10,52 @@ type HeaderProps = {
   profile: Profile;
 };
 
+/**
+ * Compact once the page has scrolled past this. One threshold, no hysteresis: the spacer never
+ * resizes, so document height is constant and nothing can move scrollY on its own — the only thing
+ * that crosses this line is the user. Small enough to feel immediate, big enough to swallow
+ * sub-pixel scroll noise (comparing against zero fails on fractional offsets).
+ */
+const COMPACT_AT = 8;
+
 const EXPANDED = { avatar: 56, name: "1.75rem", padTop: 56, padBottom: 32, gap: 16 };
 const COMPACT = { avatar: 32, name: "0.875rem", padTop: 12, padBottom: 12, gap: 12 };
 
 /**
- * Animates between two states — expanded and compact — with no scroll-linked in-between values.
+ * Two states, expanded and compact, nothing scroll-linked in between.
  *
- * Every piece of UI common to both states (avatar, name, social links) is a single instance whose
- * own size animates, so it visibly travels between the two layouts. Rendering an expanded copy and
- * a compact copy and cross-fading them would leave that shared UI without any transition at all.
- *
- * `fixed` with a spacer, not `sticky`. A sticky header keeps its full height in flow, so shrinking
- * it shortens the document, which clamps scrollY, which re-crosses the threshold — measured on a
- * 620px viewport it oscillates without ever settling (idle heights 99, 103, 103, 80, 60). Fixed
- * positioning takes the header out of flow so its resizing can't feed back into scroll position.
- *
- * Both heights are CSS variables, never measured: the spacer and the header read the same values, so
- * the reserved space is right on the first paint instead of appearing once an observer has run.
+ * UI common to both states (avatar, name, social links) is a single instance whose size animates,
+ * so it travels between the layouts instead of cross-fading. `fixed` plus a constant-height spacer
+ * keeps the header out of flow and document height fixed, so resizing can never feed back into
+ * scrollY — a sticky header oscillates here. Both heights are the CSS vars in styles.css.
  */
 export const Header = ({ profile }: HeaderProps) => {
   const { scrollY } = useScroll();
   const reduceMotion = useReducedMotion();
-  const [compact, setCompact] = useState(false);
+  // Initialised from the live offset, so a reload that restores scroll doesn't start expanded.
+  const [compact, setCompact] = useState(() => window.scrollY > COMPACT_AT);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    setCompact((wasCompact) => (wasCompact ? latest > EXPAND_AT : latest > COMPACT_AT));
+    setCompact(latest > COMPACT_AT);
   });
 
   const to = compact ? COMPACT : EXPANDED;
   const transition = reduceMotion
     ? { duration: 0 }
-    : { duration: 0.34, ease: [0.22, 0.61, 0.36, 1] as const };
+    : { duration: 0.3, ease: [0.22, 0.61, 0.36, 1] as const };
 
   return (
     <>
-      {/*
-        Reserves the header's place in flow at a fixed height, the expanded one. It never tracks the
-        compacted header, which is what keeps document height constant: a spacer that resized would
-        move scrollY, re-trigger the threshold, and flop the header between sizes — and it would also
-        shorten the page below the scroll-snap position, putting that position out of reach.
-
-        Height comes from the same CSS variable the header uses, so there is nothing to measure and
-        the space is correct on the first paint. snap-start makes this the top resting position, where
-        the header stays expanded. Margin, not padding, because this is a border-box height.
-      */}
+      {/* Reserves the header's place in flow and shrinks with it, on the same transition, so
+          content slides up in sync with the bar instead of leaving a blank band. The scroll floor
+          in App keeps maxScroll above the threshold, so the shrink can't clamp scrollY back across
+          it. Margin, not padding: this is a border-box height. */}
       <div
         aria-hidden="true"
-        className="mt-[env(safe-area-inset-top)] h-[var(--header-expanded)] snap-start"
+        className={cn(
+          "mt-[env(safe-area-inset-top)] transition-[height] duration-300 ease-out",
+          compact ? "h-[var(--header-compact)]" : "h-[var(--header-expanded)]",
+        )}
       />
 
       <header
