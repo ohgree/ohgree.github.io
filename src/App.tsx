@@ -24,17 +24,19 @@ export const App = () => {
   })).filter((group) => group.items.length > 0);
 
   return (
-    // Scroll floor: the spacer shrinks when the header compacts, and this keeps maxScroll above
-    // the compact threshold afterwards, so the shrink can never clamp scrollY back across it and
-    // re-expand the header on its own.
+    // Scroll floor: the page always overflows the viewport by at least 1rem, so even after a
+    // document shrink (header compacting, a card collapsing) maxScroll stays above the compact
+    // threshold and the browser clamp can never re-expand the header on its own.
     <div className="flex min-h-[calc(100dvh+1rem)] flex-col">
       <Header profile={profile} />
 
+      {/* Top padding carries an extra COMPACT_AT so the band that sits tucked under the compact
+          bar is always padding, never content. */}
       <div
         className={cn(
           CONTAINER,
           "flex flex-1 flex-col gap-16",
-          "pt-[var(--gutter)] pb-[calc(var(--gutter)+env(safe-area-inset-bottom))]",
+          "pt-[calc(var(--gutter)+8px)] pb-(--gutter)",
         )}
       >
         <main className="flex flex-col gap-12">

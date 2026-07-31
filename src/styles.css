@@ -20,25 +20,16 @@
 :root {
   /* One gutter for every side of the page, so the inner padding stays even all the way round. */
   --gutter: 1.5rem;
-
-  /*
-   * Header geometry, declared rather than measured. The spacer and the header read the same values,
-   * so nothing has to be observed at runtime and the reserved space exists on the very first paint.
-   * Generous enough for the tagline to wrap on narrow screens; the header clips rather than grows.
-   */
-  --header-expanded: 19rem;
-  --header-compact: 3.5rem;
-}
-
-@media (width >= 40rem) {
-  :root {
-    --header-expanded: 15rem;
-  }
 }
 
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  /*
+   * The header shrinks when it compacts; scroll anchoring compensates for that shrink by moving
+   * scrollY back across the compact threshold, which re-expands the header — an infinite flap.
+   */
+  overflow-anchor: none;
   /*
    * Page one step down on base-200 so cards can be the lightest surface (base-100) and read as
    * raised. base-200 rather than base-300 because how far apart the base steps sit is very
@@ -49,6 +40,14 @@ html {
    * past the body would otherwise flash the wrong shade.
    */
   background-color: var(--color-base-200);
+  /* No viewport scrollbar. The page is a short index, and the compact header already signals
+     scroll state; wheel / trackpad / keyboard scrolling are unaffected. */
+  scrollbar-width: none;
+}
+
+/* Older Safari (pre-18.2) has no scrollbar-width. */
+html::-webkit-scrollbar {
+  display: none;
 }
 
 body {

@@ -68,20 +68,20 @@ load-bearing:
   size animates, so it travels between the layouts. Rendering an expanded copy and a compact copy
   and cross-fading them leaves that shared UI with no transition at all — it disappears in one place
   and reappears in another.
-- The header is `fixed` with a spacer that shrinks on the same transition, so content slides up in
-  sync with the bar. Both heights are **CSS variables** (`--header-expanded`, `--header-compact`),
-  never measured; the expanded value is larger below `40rem`, where the tagline wraps to more
-  lines. Shrinking the spacer shortens the document, which can clamp `scrollY` back across the
-  compact threshold and re-expand the header on its own — a sticky header oscillates exactly this
-  way at a 620px viewport. The root's scroll floor (`min-h-[calc(100dvh+1rem)]`) keeps `maxScroll`
-  above the threshold, which makes the single-threshold state machine flap-free by construction.
+- The header is `sticky` with **natural content height** — nothing is declared or measured. Its
+  paddings transition and the expanded-only block collapses, so the height animates as a
+  consequence. A document shrink (the header compacting, a card collapsing) can clamp `scrollY`
+  back across the compact threshold and re-expand the header on its own. The root's scroll floor
+  (`min-h-[calc(100dvh+1rem)]`) keeps `maxScroll` above the threshold in every state, which makes
+  the single-threshold state machine flap-free by construction — on any viewport, at any content
+  length.
 - `m` is [Motion](https://motion.dev)'s small build and carries no features of its own, so
   `LazyMotion` in `main.tsx` supplies `domAnimation`. Without it the animations silently never bind.
 
 Gutters come from a single `--gutter`, shared by the header and the content via `CONTAINER` so the
-compact bar's avatar stays aligned with the cards. Each side takes `max(--gutter, safe-area-inset)`,
-and the page renders with `viewport-fit=cover` so those insets are real. Link labels drop to
-icon-only under `sm`, since three labels beside the avatar and name squeeze the expanded row.
+compact bar's avatar stays aligned with the cards. Link labels drop to icon-only under `sm`, since
+three labels beside the avatar and name squeeze the expanded row, and the expanded paddings tighten
+below `30rem` so the header doesn't dominate a phone screen.
 
 ## Theming
 

@@ -7,7 +7,7 @@ type FooterProps = {
 };
 
 export const Footer = ({ publicRepos, generatedAt }: FooterProps) => (
-  <footer className="border-base-300 flex flex-col gap-3 border-t pt-8 font-mono text-xs sm:flex-row sm:items-center sm:justify-between">
+  <footer className="border-base-300 flex flex-col gap-3 border-t pt-6 font-mono text-xs sm:flex-row sm:items-center sm:justify-between">
     <a
       href="https://github.com/ohgree?tab=repositories"
       target="_blank"
