@@ -1,0 +1,68 @@
+{
+  "generatedAt": "2026-07-31T08:09:56.942Z",
+  "profile": {
+    "login": "ohgree",
+    "name": "MJ Shin",
+    "bio": "I make cool stuff look cooler",
+    "location": "Seoul, Republic of Korea",
+    "avatarUrl": "https://avatars.githubusercontent.com/u/7628805?v=4&s=160",
+    "publicRepos": 42
+  },
+  "projects": [
+    {
+      "slug": "dom-cutout",
+      "name": "dom-cutout",
+      "kind": "package",
+      "tagline": "Cut the silhouette of one DOM element out of another, following its real contour.",
+      "blurb": "The punch-through badge you've seen on avatar status dots, except nothing is pre-baked. It measures the live DOM, so any overlay shape, size, or position works, and SVG glyphs get traced contour-for-contour rather than boxed. Zero-dependency core, React adapter, stays in sync via ResizeObserver.",
+      "links": [
+        {
+          "label": "Docs & demo",
+          "url": "https://ohgree.github.io/dom-cutout/"
+        }
+      ],
+      "repo": {
+        "nameWithOwner": "ohgree/dom-cutout",
+        "url": "https://github.com/ohgree/dom-cutout",
+        "stars": 1,
+        "forks": 0,
+        "language": "TypeScript",
+        "license": "MIT",
+        "topics": ["badge", "css-mask", "cutout", "mask", "react", "svg", "zero-dependency"],
+        "pushedAt": "2026-07-31T03:06:35Z",
+        "createdAt": "2026-07-30T04:15:09Z"
+      },
+      "npm": {
+        "name": "dom-cutout",
+        "version": "0.2.2",
+        "url": "https://www.npmjs.com/package/dom-cutout",
+        "weeklyDownloads": null
+      }
+    },
+    {
+      "slug": "back-track",
+      "name": "back-track",
+      "kind": "app",
+      "tagline": "Posture monitoring in the browser, driven by your webcam.",
+      "blurb": "Tracks 33 body landmarks with MediaPipe Pose and calls out leaning, screen-crowding, and slouching as it happens, with adjustable thresholds and per-session stats. Every frame is processed locally, so no video leaves the machine.",
+      "links": [
+        {
+          "label": "Live app",
+          "url": "https://backtrack-app.vercel.app"
+        }
+      ],
+      "repo": {
+        "nameWithOwner": "ohgree/back-track",
+        "url": "https://github.com/ohgree/back-track",
+        "stars": 3,
+        "forks": 0,
+        "language": "Svelte",
+        "license": "MIT",
+        "topics": [],
+        "pushedAt": "2026-01-14T01:48:47Z",
+        "createdAt": "2026-01-06T04:24:54Z"
+      },
+      "npm": null
+    }
+  ]
+}
