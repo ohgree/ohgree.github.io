@@ -12,8 +12,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       dom-cutout:
-        specifier: ^0.3.0
-        version: 0.3.0(react@19.2.8)
+        specifier: ^0.3.1
+        version: 0.3.1(react@19.2.8)
       motion:
         specifier: ^12.43.0
         version: 12.43.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -725,8 +725,8 @@ packages:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
 
-  dom-cutout@0.3.0:
-    resolution: {integrity: sha512-lwj3PE4LEzy6V6/+mOD+1uOMr6tB1CjnWkP3BPU9j3G27I0T8hHgdGjSQdZgmfpxgoToLVUaKR36pKfd4hcKpg==}
+  dom-cutout@0.3.1:
+    resolution: {integrity: sha512-aGppMevVL3EKR2yqqY7mmSPS3hqg1HYwrBH37N92kYVGTnf26GlMxL5Ps/nd1Lnoq5dyI5zkVQyhfLZDnGiDTg==}
     peerDependencies:
       react: '>=18'
     peerDependenciesMeta:
@@ -1538,7 +1538,7 @@ snapshots:
 
   detect-libc@2.1.2: {}
 
-  dom-cutout@0.3.0(react@19.2.8):
+  dom-cutout@0.3.1(react@19.2.8):
     optionalDependencies:
       react: 19.2.8
 

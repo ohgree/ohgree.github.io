@@ -23,7 +23,10 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* No scroll-behavior: smooth — the page has no in-page anchors, and an
+     animated scroll that crosses the header's compact threshold gets
+     cancelled back to 0 when the shrink shortens the document mid-flight,
+     bouncing the header open again. */
   -webkit-text-size-adjust: 100%;
   /*
    * The header shrinks when it compacts; scroll anchoring compensates for that shrink by moving
