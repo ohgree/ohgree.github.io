@@ -2,10 +2,10 @@
  * Enriches the curated project list in `data/projects.source.json` with live metadata
  * from the GitHub and npm registry APIs, then writes `src/data/projects.json`.
  *
- * Runs at build time (see .github/workflows/deploy.yml), so visitors never hit an API.
- * The output is committed as a fallback: if a request fails, the previous value for that
- * field is reused and the build still succeeds. Set GITHUB_TOKEN to lift the 60 req/hr
- * unauthenticated rate limit.
+ * Runs at build time (see .github/workflows/deploy.yml). The committed output renders the
+ * first paint and is the fallback when the client-side refresh (src/data/live.ts) can't
+ * reach the APIs; if a request fails here, the previous value for that field is reused and
+ * the build still succeeds. Set GITHUB_TOKEN to lift the 60 req/hr unauthenticated limit.
  */
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";

@@ -1,7 +1,7 @@
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { ProjectCard } from "@/components/ProjectCard";
-import { projectIndex } from "@/data";
+import { useProjectIndex } from "@/data/live";
 import { cn } from "@/lib/cn";
 import { CONTAINER } from "@/lib/layout";
 import type { ProjectKind } from "@/types";
@@ -16,7 +16,7 @@ const KIND_LABELS: Record<ProjectKind, string> = {
 const KIND_ORDER: ProjectKind[] = ["package", "app", "service", "tool"];
 
 export const App = () => {
-  const { profile, projects, generatedAt } = projectIndex;
+  const { profile, projects, generatedAt } = useProjectIndex();
 
   const groups = KIND_ORDER.map((kind) => ({
     kind,
