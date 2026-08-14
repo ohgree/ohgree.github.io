@@ -27,9 +27,7 @@ export const Header = ({ profile }: HeaderProps) => {
   // Initialised from the live offset, so a reload that restores scroll doesn't start expanded.
   const [compact, setCompact] = useState(() => window.scrollY > COMPACT_AT);
 
-  // Motion's value reports Safari's top rubber-band as positive magnitude (window.scrollY
-  // is negative during the pull), which would compact the header on every overscroll — so
-  // the motion event is only the trigger and the decision reads the signed offset.
+  // Motion folds Safari's rubber-band to positive magnitude; only window.scrollY is signed.
   useMotionValueEvent(scrollY, "change", () => {
     setCompact(window.scrollY > COMPACT_AT);
   });

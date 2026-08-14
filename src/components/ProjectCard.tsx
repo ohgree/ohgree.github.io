@@ -49,8 +49,7 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
   const detailsId = `${project.slug}-details`;
 
   return (
-    // Shadow sits on a wrapper outside <Cutout>: the mask covers only the masked
-    // element's border box, so a shadow painted by the card itself gets clipped.
+    // Shadow on an unmasked wrapper; the mask clips anything the card paints outside its box.
     <div className="w-full rounded-2xl shadow-md">
       <Cutout
         overlay={

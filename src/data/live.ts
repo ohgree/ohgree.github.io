@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { projectIndex } from "@/data";
 import type { NpmMeta, Profile, ProjectIndex, RepoMeta } from "@/types";
 
-// Field mappings mirror scripts/fetch-projects.mjs — keep the two in sync.
+// Field mappings mirror scripts/fetch-projects.mjs; keep the two in sync.
 
 type GitHubRepo = {
   full_name: string;
@@ -35,8 +35,7 @@ const getJson = async <T>(url: string, signal: AbortSignal): Promise<T | null> =
   }
 };
 
-// Every fetcher returns `prior` (by reference) when its request fails, so
-// identity comparison downstream detects "nothing was actually refreshed".
+// Fetchers return `prior` by reference on failure, so identity marks "not refreshed".
 
 const fetchRepo = async (prior: RepoMeta, signal: AbortSignal): Promise<RepoMeta> => {
   const data = await getJson<GitHubRepo>(
